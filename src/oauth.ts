@@ -1,6 +1,5 @@
 import {
   AuthorizationError,
-  CimdFetchError,
   authorizationErrorRedirect,
   type AuthRequest,
   type ConsentDescription,
@@ -8,7 +7,6 @@ import {
 } from "@cloudflare/workers-oauth-provider";
 
 export const MCP_SCOPE = "mcp:read";
-const CHATGPT_CLIENT_ID = "https://chatgpt.com/oauth/client.json";
 
 export interface Env {
   OAUTH_KV: any;
@@ -70,9 +68,6 @@ function errorResponse(error: unknown): Response {
     if (error.redirectTo) return Response.redirect(error.redirectTo, 302);
     return new Response(error.description, { status: 400 });
   }
-  if (error instanceof CimdFetchError) {
-    return new Response("OAuth client metadata could not be verified.", { status: 400 });
-  }
   console.error(error);
   return new Response("OAuth authorization failed.", { status: 500 });
 }
@@ -99,13 +94,6 @@ async function authorize(request: Request, env: Env): Promise<Response> {
   const provider = oauth(env);
 
   if (request.method === "GET") {
-    if (new URL(request.url).searchParams.get("client_id") !== CHATGPT_CLIENT_ID) {
-      return Response.json(
-        { error: "unauthorized_client", error_description: "Only ChatGPT is allowed." },
-        { status: 400 }
-      );
-    }
-
     const authRequest = await provider.parseAuthRequest(request);
     const details = await provider.describeConsent(authRequest);
     const consent = await provider.beginConsent(authRequest);
@@ -122,9 +110,6 @@ async function authorize(request: Request, env: Env): Promise<Response> {
     }
 
     const approved = await provider.approveConsent(request, handle, { scope: [MCP_SCOPE] });
-    if (approved.request.clientId !== CHATGPT_CLIENT_ID) {
-      return oauthRedirect(approved.request, approved.headers, "access_denied", "OAuth client not allowed.");
-    }
     return startGitHubLogin(request, env, approved.request, approved.headers);
   }
 

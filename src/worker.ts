@@ -35,7 +35,6 @@ export default {
       defaultHandler: oauthHandler,
       authorizeEndpoint: "/authorize",
       tokenEndpoint: "/oauth/token",
-      clientIdMetadataDocumentEnabled: true,
       scopesSupported: [MCP_SCOPE],
       requiredScopes: [MCP_SCOPE],
       resourceMetadata: {
