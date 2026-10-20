@@ -81,7 +81,7 @@ Then point the config at the build output:
   "mcpServers": {
     "smashrun": {
       "command": "node",
-      "args": ["/absolute/path/to/smash-mcp/dist/index.js"],
+      "args": ["/absolute/path/to/smash-mcp/dist/cli.js"],
       "env": {
         "SMASHRUN_ACCESS_TOKEN": "your-access-token-here"
       }
