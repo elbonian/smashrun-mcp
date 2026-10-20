@@ -1,11 +1,11 @@
-# Cloudflare Workers deployment (personal fork)
+# Cloudflare Workers deployment
 
-This setup hosts the Smashrun MCP server on Cloudflare Workers with GitHub login and a pre-registered OAuth client for ChatGPT. It is specific to this fork; the generic Streamable HTTP transport does not require Cloudflare.
+This optional setup hosts Smashrun MCP on Cloudflare Workers with GitHub login and a pre-registered OAuth client for ChatGPT. Each user configures their own Cloudflare, GitHub, and Smashrun credentials. The generic Streamable HTTP transport does not require Cloudflare.
 
 ## One-time setup
 
 1. Enable **Workers Free** and a `workers.dev` subdomain in Cloudflare.
-2. Create a Workers KV namespace named `OAUTH_KV` and set its ID in `wrangler.jsonc`. Use the **remote** namespace for OAuth client registration; Wrangler's default local KV is separate.
+2. Create a Workers KV namespace, then replace `REPLACE_WITH_YOUR_OAUTH_KV_NAMESPACE_ID` in `wrangler.jsonc` with its ID (keeping the binding name `OAUTH_KV`). Use the **remote** namespace for OAuth client registration; Wrangler's default local KV is separate.
 3. Create a GitHub **OAuth App** with callback `https://<worker>.<subdomain>.workers.dev/callback` (optionally also `http://localhost:8788/callback` for local testing).
 4. Obtain a Smashrun user access token. Create a git-ignored `.dev.vars` file containing:
 
